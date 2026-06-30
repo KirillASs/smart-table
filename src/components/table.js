@@ -12,9 +12,32 @@ export function initTable(settings, onAction) {
     const root = cloneTemplate(tableTemplate);
 
     // @todo: #1.2 —  вывести дополнительные шаблоны до и после таблицы
+    console.log(before)
+    before.reverse().forEach(subName => {
+        root[subName] = cloneTemplate(subName)
+        root.container.prepend(root[subName].container)
+    })
+    
+    after.forEach(subName => {
+        root[subName] = cloneTemplate(subName)
+        root.container.append(root[subName].container)
+    })
 
     // @todo: #1.3 —  обработать события и вызвать onAction()
+    root.container.addEventListener('change', () => {
+        onAction()
+    })
+    
+    root.container.addEventListener('reset', () => {
+        setTimeout(() => {
+            onAction()
+        }, 1000)
+    })
 
+    root.container.addEventListener('submit', (e) => {
+        e.preventDefault
+        onAction(e.submitter)
+    })
     const render = (data) => {
         // @todo: #1.1 — преобразовать данные в массив строк на основе шаблона rowTemplate
         
@@ -35,9 +58,7 @@ export function initTable(settings, onAction) {
             })
            return row.container
         });
-        console.log(nextRows)
         root.elements.rows.replaceChildren(...nextRows);
-        
     }
 
     return {...root, render};
