@@ -1,6 +1,8 @@
 import {createComparison, defaultRules} from "../lib/compare.js";
 
 // @todo: #4.3 — настроить компаратор
+const compare = createComparison(defaultRules);
+
 
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
@@ -12,13 +14,43 @@ export function initFiltering(elements, indexes) {
                             const option = document.createElement('option');
                             option.value = name;
                             option.textContent = name;
+                            return option
                         })
             )
         }) 
     return (data, state, action) => {
         // @todo: #4.2 — обработать очистку поля
-        console.log(action)
+        
+        if (action && action.name === 'clear') {
+            console.log('Clear action detected:', action);
+            
+            // Получаем поле из data-field атрибута кнопки
+            const field = action.dataset?.field;
+            
+            if (field) {
+                const button = action;
+                const parent = button.parentElement;
+                
+                if (parent) {
+                    const input = parent.querySelector('input, select');
+                    
+                    if (input) {
+                        input.value = '';
+                        console.log(`Cleared input for field: ${field}`);
+                    } else {
+                        console.warn(`No input found in parent for field: ${field}`);
+                    }
+                }
+                
+                if (state && state[field] !== undefined) {
+                    state[field] = '';
+                }
+            }
+        }
+        
+        
         // @todo: #4.5 — отфильтровать данные используя компаратор
-        return data;
+        
+        return data.filter(row => compare(row, state));
     }
 }
