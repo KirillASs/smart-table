@@ -59,7 +59,8 @@ const sampleTable = initTable({
 }, render);
 
 // @todo: инициализация
-const applySearch = initSearching(sampleTable.search.elements, "search");
+const applySearch = initSearching("search");
+
 
 const applyFiltering = initFiltering(sampleTable.filter.elements, {   
     searchBySeller: indexes.sellers               
@@ -86,5 +87,9 @@ const applyPagination = initPagination(
 
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
+
+console.log("sampleTable.search:", sampleTable.search);
+console.log("state at render:", collectState());
+
 
 render();
